@@ -3,8 +3,8 @@ name = "sme-arena-game"
 version = "0.1.0"
 edition = "2024"
 
-#[lib]
-#crate-type = ["cdylib", "rlib"]
+[lib]
+crate-type = ["cdylib"]
 
 [[bin]]
 name = "sme-arena-game"
@@ -37,8 +37,7 @@ bevy = { version = "0.16.1", default-features = false, features = [
 "x11",
 "bevy_animation",
 "bevy_gizmos",
-"serialize",
-"android-game-activity",
+"serialize"
 ] }
 
 # Physique
@@ -98,6 +97,12 @@ target_sdk_version = 33
 
 [[package.metadata.android.uses_permission]]
 name = "android.permission.VIBRATE"
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.INTERNET"
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.WRITE_EXTERNAL_STORAGE"
 
 [profile.dev]
 opt-level = 1
