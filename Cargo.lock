@@ -5656,6 +5656,35 @@ dependencies = [
 ]
 
 [[package]]
+name = "shiftropolis"
+version = "0.1.0"
+dependencies = [
+ "android_logger",
+ "anyhow",
+ "bevy 0.16.1",
+ "bevy_egui",
+ "bevy_rapier3d",
+ "clap",
+ "colored",
+ "criterion",
+ "env_logger",
+ "indexmap",
+ "jni",
+ "log",
+ "ndk 0.9.0",
+ "ndk-glue",
+ "noise",
+ "petgraph 0.6.5",
+ "rand 0.8.5",
+ "rayon",
+ "serde",
+ "serde_json",
+ "sysinfo",
+ "thiserror 1.0.69",
+ "uuid",
+]
+
+[[package]]
 name = "shlex"
 version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5712,35 +5741,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "sme-arena-game"
-version = "0.1.0"
-dependencies = [
- "android_logger",
- "anyhow",
- "bevy 0.16.1",
- "bevy_egui",
- "bevy_rapier3d",
- "clap",
- "colored",
- "criterion",
- "env_logger",
- "indexmap",
- "jni",
- "log",
- "ndk 0.9.0",
- "ndk-glue",
- "noise",
- "petgraph 0.6.5",
- "rand 0.8.5",
- "rayon",
- "serde",
- "serde_json",
- "sysinfo",
- "thiserror 1.0.69",
- "uuid",
 ]
 
 [[package]]

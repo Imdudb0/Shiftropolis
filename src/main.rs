@@ -8,6 +8,7 @@ use log::{info, warn, error};
 use std::time::{Duration, Instant};
 use rand::Rng;
 
+use shiftropolis::app;
 
 mod core;
 mod generation;
@@ -53,8 +54,7 @@ enum Commands {
         size_range: String,
         /// Rules range (min,max)
         #[arg(long, default_value = "2,5")]
-        rules_range: String,
-        /// Stop on first anomaly
+        rules_range: String,        /// Stop on first anomaly
         #[arg(long)]
         fail_fast: bool,
     },
