@@ -3,7 +3,6 @@ use bevy::render::mesh::{Indices, PrimitiveTopology};
 use bevy_rapier3d::prelude::*;
 use crate::app::core::*;
 use crate::app::game::{ArenaModule, EnergyOrb, DynamicHazard, HazardType, FragileSurface, ArenaManager};
-use log::info;
 
 pub struct MeshGenerationPlugin;
 
@@ -118,9 +117,9 @@ pub fn spawn_arena_visuals(
 ) {
     if let Some(ref arena) = arena_manager.current_arena {
         info!("🏗️ Génération visuelle de l'arène avec {} modules", arena.modules.len());
-        
+
         let mut spawned_entities = Vec::new();
-        
+
         for module in &arena.modules {
             if let Some(entity) = spawn_module_visual(
                 &mut commands,
@@ -131,7 +130,7 @@ pub fn spawn_arena_visuals(
                 spawned_entities.push(entity);
             }
         }
-        
+
         arena_manager.spawned_modules = spawned_entities;
         info!("✅ {} entités visuelles créées", arena_manager.spawned_modules.len());
     }
@@ -144,7 +143,7 @@ fn spawn_module_visual(
     materials: &ModuleMaterials,
 ) -> Option<Entity> {
     let position = Vec3::new(cell.x as f32, 0.0, cell.y as f32);
-    
+
     let (mesh, material, scale, collider, additional_components) = match cell.module_id {
         ModuleId::FloorStd => (
             create_cube_mesh(meshes, 1.0, 0.1, 1.0),
@@ -153,7 +152,7 @@ fn spawn_module_visual(
             Collider::cuboid(0.5, 0.05, 0.5),
             vec![]
         ),
-        
+
         ModuleId::FloorLarge => (
             create_cube_mesh(meshes, 2.0, 0.1, 2.0),
             materials.floor_large.clone(),
@@ -161,7 +160,7 @@ fn spawn_module_visual(
             Collider::cuboid(1.0, 0.05, 1.0),
             vec![]
         ),
-        
+
         ModuleId::FloorFragile => {
             let params = cell.module_params.as_ref()
                 .and_then(|p| p.as_object())
@@ -169,7 +168,7 @@ fn spawn_module_visual(
                     obj.get("breakDelay").and_then(|v| v.as_f64()).unwrap_or(0.5) as f32,
                     obj.get("respawnDelay").and_then(|v| v.as_f64()).unwrap_or(5.0) as f32,
                 )).unwrap_or((0.5, 5.0));
-            
+
             (
                 create_cube_mesh(meshes, 1.0, 0.1, 1.0),
                 materials.floor_fragile.clone(),
@@ -185,7 +184,7 @@ fn spawn_module_visual(
                 }) as Box<dyn Component>]
             )
         },
-        
+
         ModuleId::WallLow => (
             create_cube_mesh(meshes, 1.0, 1.0, 1.0),
             materials.wall_low.clone(),
@@ -193,7 +192,7 @@ fn spawn_module_visual(
             Collider::cuboid(0.5, 0.5, 0.5),
             vec![]
         ),
-        
+
         ModuleId::WallHigh => (
             create_cube_mesh(meshes, 1.0, 2.5, 1.0),
             materials.wall_high.clone(),
@@ -201,7 +200,7 @@ fn spawn_module_visual(
             Collider::cuboid(0.5, 1.25, 0.5),
             vec![]
         ),
-        
+
         ModuleId::PanelGlass => (
             create_cube_mesh(meshes, 1.0, 2.0, 0.1),
             materials.panel_glass.clone(),
@@ -209,13 +208,13 @@ fn spawn_module_visual(
             Collider::cuboid(0.5, 1.0, 0.05),
             vec![]
         ),
-        
+
         ModuleId::RampLow | ModuleId::RampSteep => {
             let angle = cell.module_params.as_ref()
                 .and_then(|p| p.get("angle"))
                 .and_then(|v| v.as_f64())
                 .unwrap_or(30.0) as f32;
-                
+
             (
                 create_ramp_mesh(meshes, 1.0, angle.to_radians()),
                 materials.ramp.clone(),
@@ -224,13 +223,13 @@ fn spawn_module_visual(
                 vec![]
             )
         },
-        
+
         ModuleId::OrbEnergy => {
             let time_value = cell.module_params.as_ref()
                 .and_then(|p| p.get("timeValue"))
                 .and_then(|v| v.as_f64())
                 .unwrap_or(5.0) as f32;
-                
+
             (
                 create_sphere_mesh(meshes, 0.3, 16),
                 materials.orb_energy.clone(),
@@ -242,7 +241,7 @@ fn spawn_module_visual(
                 }) as Box<dyn Component>]
             )
         },
-        
+
         ModuleId::HazardLavaPit => (
             create_cube_mesh(meshes, 1.0, 0.05, 1.0),
             materials.hazard_lava.clone(),
@@ -255,7 +254,7 @@ fn spawn_module_visual(
                 max_lifetime: f32::MAX,
             }) as Box<dyn Component>]
         ),
-        
+
         ModuleId::HazardLaserEmitterStatic => (
             create_cube_mesh(meshes, 0.5, 1.5, 0.5),
             materials.hazard_laser.clone(),
@@ -268,7 +267,7 @@ fn spawn_module_visual(
                 max_lifetime: f32::MAX,
             }) as Box<dyn Component>]
         ),
-        
+
         ModuleId::HazardLaserTurretRotate => (
             create_cylinder_mesh(meshes, 0.4, 1.0, 12),
             materials.hazard_laser.clone(),
@@ -281,13 +280,13 @@ fn spawn_module_visual(
                 max_lifetime: f32::MAX,
             }) as Box<dyn Component>]
         ),
-        
+
         ModuleId::DecorArchMetallic => {
             let color_variant = cell.module_params.as_ref()
                 .and_then(|p| p.get("colorVariant"))
                 .and_then(|v| v.as_u64())
                 .unwrap_or(3);
-                
+
             (
                 create_arch_mesh(meshes, 2.0, 3.0),
                 materials.decor_metallic.clone(),
@@ -296,12 +295,12 @@ fn spawn_module_visual(
                 vec![]
             )
         },
-        
+
         _ => return None, // Module non supporté pour l'instant
     };
 
     let final_position = position + Vec3::new(0.0, scale.y * 0.5, 0.0);
-    
+
     let mut entity_commands = commands.spawn((
         PbrBundle {
             mesh,
@@ -472,7 +471,7 @@ fn create_cylinder_mesh(meshes: &mut Assets<Mesh>, radius: f32, height: f32, res
     // Indices pour les faces latérales
     for i in 0..resolution {
         let next = (i + 1) % resolution;
-        
+
         let top_current = i * 2;
         let bottom_current = i * 2 + 1;
         let top_next = next * 2;
@@ -509,7 +508,6 @@ fn create_ramp_mesh(meshes: &mut Assets<Mesh>, size: f32, angle: f32) -> Handle<
         [half_size, 0.0, half_size],
         [half_size, height, half_size],
         [-half_size, height, half_size],
-        // Autres faces...
     ];
 
     let indices = vec![
@@ -517,14 +515,16 @@ fn create_ramp_mesh(meshes: &mut Assets<Mesh>, size: f32, angle: f32) -> Handle<
         0, 1, 2, 0, 2, 3,
         // Face avant
         4, 6, 5, 4, 7, 6,
-        // (autres faces simplifiées)
     ];
 
+    let inclined_normal = [0.0, angle.cos(), -angle.sin()];
+    let front_normal = [0.0, 0.0, 1.0];
+    
     let normals = vec![
-        // Normales calculées pour la face inclinée
-        [0.0, angle.cos(), -angle.sin()]; 4,
-        // Face avant
-        [0.0, 0.0, 1.0]; 4,
+        // Face inclinée (4 vertices)
+        inclined_normal, inclined_normal, inclined_normal, inclined_normal,
+        // Face avant (4 vertices)
+        front_normal, front_normal, front_normal, front_normal,
     ];
 
     let uvs = vec![
@@ -545,7 +545,7 @@ fn create_arch_mesh(meshes: &mut Assets<Mesh>, width: f32, height: f32) -> Handl
     // Maillage simplifié d'une arche (deux piliers + arc)
     let pillar_width = width * 0.1;
     let arch_thickness = width * 0.05;
-    
+
     // Pour l'instant, on crée un maillage rectangulaire simple
     // Dans une version plus avancée, on pourrait créer une vraie forme d'arche
     create_cube_mesh(meshes, width, height, arch_thickness)
@@ -560,7 +560,7 @@ pub fn animate_orbs_system(
     mut orb_query: Query<(&mut Transform, &EnergyOrb), (With<EnergyOrb>, Without<Player>)>,
 ) {
     let time_secs = time.elapsed_seconds();
-    
+
     for (mut transform, orb) in orb_query.iter_mut() {
         if !orb.collected {
             // Rotation et flottement
@@ -575,7 +575,7 @@ pub fn hazard_effects_system(
     mut hazard_query: Query<(&mut Transform, &DynamicHazard), With<DynamicHazard>>,
 ) {
     let time_secs = time.elapsed_seconds();
-    
+
     for (mut transform, hazard) in hazard_query.iter_mut() {
         match hazard.hazard_type {
             HazardType::LavaPit => {
@@ -599,7 +599,7 @@ pub fn fragile_surface_system(
     player_query: Query<&Transform, With<Player>>,
 ) {
     let dt = time.delta_seconds();
-    
+
     if let Ok(player_transform) = player_query.get_single() {
         for (entity, mut fragile, mut visibility) in fragile_query.iter_mut() {
             if fragile.is_broken {
@@ -619,7 +619,7 @@ pub fn fragile_surface_system(
                     fragile.is_broken = true;
                     fragile.respawn_timer = 0.0;
                     *visibility = Visibility::Hidden;
-                    
+
                     // Retirer le collider
                     commands.entity(entity).remove::<Collider>();
                 }

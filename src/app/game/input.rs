@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use bevy::ui::{Style, Val, JustifyContent, AlignItems, FlexDirection, PositionType}; // UI types
+use bevy::ecs::schedule::{NextState, State}; // State management types
 use crate::app::game::*;
 use log::info;
 
@@ -8,14 +10,14 @@ pub fn handle_touch_input(
     time: Res<Time>,
 ) {
     let current_time = time.elapsed_seconds();
-    
+
     // Nettoyer les anciens touches
     if let Some((_, touch_id)) = touch_input.movement_touch {
         if !touches.iter().any(|t| t.id() == touch_id) {
             touch_input.movement_touch = None;
         }
     }
-    
+
     if let Some(touch_id) = touch_input.jump_touch {
         if !touches.iter().any(|t| t.id() == touch_id) {
             touch_input.jump_touch = None;
@@ -33,7 +35,7 @@ pub fn handle_touch_input(
             } else { // Moitié droite = saut
                 touch_input.jump_touch = Some(touch_id);
             }
-            
+
             // Détecter les double-taps
             if current_time - touch_input.last_tap_time < touch_input.tap_threshold {
                 // Double tap détecté - pourrait déclencher une action spéciale
@@ -59,7 +61,7 @@ pub fn handle_keyboard_input(
     // Gestion des touches globales
     match current_state.get() {
         GameState::MainMenu => {
-            if keyboard_input.just_pressed(KeyCode::Enter) || 
+            if keyboard_input.just_pressed(KeyCode::Enter) ||
                keyboard_input.just_pressed(KeyCode::Space) {
                 next_state.set(GameState::Loading);
             }
@@ -68,7 +70,7 @@ pub fn handle_keyboard_input(
                 std::process::exit(0);
             }
         },
-        
+
         GameState::Playing => {
             if keyboard_input.just_pressed(KeyCode::Escape) {
                 next_state.set(GameState::Paused);
@@ -78,21 +80,21 @@ pub fn handle_keyboard_input(
                 next_state.set(GameState::Loading);
             }
         },
-        
+
         GameState::Paused => {
-            if keyboard_input.just_pressed(KeyCode::Escape) || 
+            if keyboard_input.just_pressed(KeyCode::Escape) ||
                keyboard_input.just_pressed(KeyCode::Space) {
                 next_state.set(GameState::Playing);
             }
         },
-        
+
         GameState::GameOver => {
-            if keyboard_input.just_pressed(KeyCode::Space) || 
+            if keyboard_input.just_pressed(KeyCode::Space) ||
                keyboard_input.just_pressed(KeyCode::Enter) {
                 next_state.set(GameState::MainMenu);
             }
         },
-        
+
         _ => {}
     }
 }
@@ -126,7 +128,7 @@ pub enum VirtualButtonAction {
 
 pub fn setup_virtual_controls(mut commands: Commands) {
     info!("🎮 Configuration des contrôles virtuels");
-    
+
     // Joystick virtuel (coin bas-gauche)
     commands.spawn((
         VirtualJoystick {
@@ -203,31 +205,31 @@ pub fn virtual_joystick_system(
 ) {
     for (mut joystick, node, global_transform) in joystick_query.iter_mut() {
         let joystick_rect = node.logical_rect(global_transform);
-        
+
         // Vérifier si un touch est dans la zone du joystick
         joystick.is_active = false;
         joystick.current_offset = Vec2::ZERO;
-        
+
         for touch in touches.iter() {
             let touch_pos = touch.position();
-            
+
             if joystick_rect.contains(touch_pos) {
                 joystick.is_active = true;
-                
+
                 // Calculer l'offset par rapport au centre
                 let center = joystick_rect.center();
                 let offset = touch_pos - center;
                 let clamped_offset = offset.clamp_length_max(joystick.radius);
-                
+
                 joystick.current_offset = clamped_offset;
-                
+
                 // Convertir en input de mouvement
                 let normalized_input = clamped_offset / joystick.radius;
                 touch_input.movement_touch = Some((
                     Vec2::new(960.0 + normalized_input.x * 960.0, 540.0 + normalized_input.y * 540.0),
                     touch.id()
                 ));
-                
+
                 break;
             }
         }
@@ -241,15 +243,15 @@ pub fn virtual_button_system(
 ) {
     for (mut button, node, global_transform) in button_query.iter_mut() {
         let button_rect = node.logical_rect(global_transform);
-        
+
         let was_pressed = button.is_pressed;
         button.is_pressed = false;
-        
+
         // Vérifier si un touch est sur le bouton
         for touch in touches.iter() {
             if button_rect.contains(touch.position()) {
                 button.is_pressed = true;
-                
+
                 match button.action {
                     VirtualButtonAction::Jump => {
                         if !was_pressed { // Nouveau press
@@ -258,7 +260,7 @@ pub fn virtual_button_system(
                     },
                     _ => {}
                 }
-                
+
                 break;
             }
         }

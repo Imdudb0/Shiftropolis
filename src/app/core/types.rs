@@ -2,6 +2,8 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use crate::app::core::*;
+use crate::app::core::Arena;
+use crate::app::core::ArenaCell;
 
 impl fmt::Display for RuleId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -60,9 +62,9 @@ impl fmt::Display for EnvVarId {
 }
 
 // Utility functions for Arena analysis
-impl crate::Arena {
+impl Arena {
     /// Returns all modules of a specific type
-    pub fn get_modules_by_type(&self, module_type: &ModuleId) -> Vec<&crate::ArenaCell> {
+    pub fn get_modules_by_type(&self, module_type: &ModuleId) -> Vec<&ArenaCell> {
         self.modules.iter()
             .filter(|cell| &cell.module_id == module_type)
             .collect()

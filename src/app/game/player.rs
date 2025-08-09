@@ -3,6 +3,7 @@ use bevy_rapier3d::prelude::*;
 use crate::app::game::*;
 use crate::app::camera::*;
 use log::info;
+use crate::app::game::gameplay::ShiftManager;
 
 pub fn spawn_player(mut commands: Commands) {
     info!("👤 Spawn du joueur");
@@ -54,7 +55,7 @@ pub fn setup_camera_for_gameplay(
                 transition_progress: 1.0,
             },
         ));
-        
+
         info!("📷 Caméra contextuelle configurée");
     }
 }
@@ -91,10 +92,10 @@ pub fn player_movement_system(
             // Pour l'instant, on utilise un contrôle simplifié
             let center_x = 960.0; // Milieu de l'écran (1920/2)
             let center_y = 540.0; // Milieu de l'écran (1080/2)
-            
+
             let delta_x = (touch_pos.x - center_x) / center_x;
             let delta_y = (touch_pos.y - center_y) / center_y;
-            
+
             movement.x += delta_x;
             movement.z += delta_y; // Inverser Y car l'écran a Y vers le bas
         }
@@ -113,7 +114,7 @@ pub fn player_movement_system(
         // Vérifier les limites de l'arène
         let bounds = arena_manager.arena_bounds;
         let pos = transform.translation;
-        
+
         if pos.x < -bounds.x * 0.5 || pos.x > bounds.x * 0.5 ||
            pos.z < -bounds.z * 0.5 || pos.z > bounds.z * 0.5 {
             // Joueur sort de l'arène - téléporter ou appliquer des dégâts
@@ -137,7 +138,7 @@ pub fn player_jump_system(
     if let Ok((mut velocity, mut player)) = player_query.get_single_mut() {
         let jump_input = keyboard_input.just_pressed(KeyCode::Space) ||
                         touch_input.jump_touch.is_some();
-        
+
         if jump_input && player.is_grounded {
             velocity.linvel.y = player.jump_force;
             player.is_grounded = false;
@@ -175,7 +176,7 @@ pub fn player_collision_system(
                                 time_bonus: orb.time_value,
                                 orb_entity: other_entity,
                             });
-                            
+
                             // Marquer l'orbe comme collecté et le faire disparaître
                             commands.entity(other_entity).despawn();
                             info!("💎 Orbe collecté! +{}s", orb.time_value);
@@ -289,7 +290,7 @@ pub fn player_respawn_system(
 ) {
     for death_event in player_death_events.read() {
         info!("💀 Mort du joueur: {:?}", death_event.cause);
-        
+
         match death_event.cause {
             DeathCause::CountdownExpired => {
                 // Game Over immédiat
@@ -318,7 +319,7 @@ pub fn player_health_regeneration_system(
 ) {
     if let Ok(mut player) = player_query.get_single_mut() {
         let dt = time.delta_seconds();
-        
+
         // Régénération lente de santé si pas au maximum
         if player.health < player.max_health && player.health > 0.0 {
             player.health += 5.0 * dt; // 5 HP par seconde

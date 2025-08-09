@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
-use log::info;
+use log::infos;
+use log::error;
+use colored::Style;
 
 mod states;
 mod player;
@@ -16,6 +18,11 @@ use crate::app::monitoring::*;
 use crate::app::data::*;
 use crate::app::mesh_generation::*;
 use crate::app::camera::*;
+use crate::app::game::gameplay::ShiftManager;
+use crate::app::game::gameplay::DifficultySystem;
+use crate::app::game::gameplay::DangerPressureSystem;
+use crate::app::ui::update_survival_ui;
+use crate::app::ui::update_game_info_ui;
 
 pub struct GamePlugin;
 

@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::ecs::schedule::States;
 
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
 pub enum GameState {
