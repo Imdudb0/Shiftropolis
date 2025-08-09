@@ -94,8 +94,9 @@ jobs:
 
     - name: Check Android compilation (dry-run)
       run: |
-        # Test de compilation sans build complet
-        cargo check --target armv7-linux-androideabi
+        # Test de compilation sans build complet pour Android
+        # Utiliser --no-default-features pour éviter les dépendances desktop
+        cargo check --target armv7-linux-androideabi --no-default-features --features android
 
   security-audit:
     name: Security Audit
