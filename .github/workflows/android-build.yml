@@ -36,6 +36,7 @@ jobs:
         api-level: 33
         target: google_apis
         arch: x86_64
+        packages: 'platforms;android-33'
 
     - name: Install Android NDK
       run: |
