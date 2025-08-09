@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
-use log::infos;
+use log::info;
 use log::error;
 use colored::Style;
 

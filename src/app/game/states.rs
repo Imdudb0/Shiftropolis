@@ -1,5 +1,6 @@
 use bevy::prelude::*;
-use bevy::ecs::schedule::States;
+use bevy::state::state::{States, State, NextState, OnEnter, OnExit, OnTransition};
+use bevy::state::condition::in_state;
 
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
 pub enum GameState {
