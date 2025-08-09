@@ -37,9 +37,11 @@ jobs:
         target: google_apis
         arch: x86_64
 
-    - name: Install Android NDK
+    - name: Install Android SDK Platform and NDK
       run: |
-        sdkmanager "ndk;25.2.9519653"
+        # Install required SDK platform and tools
+        sdkmanager --install "platforms;android-33" "platform-tools" "build-tools;33.0.2"
+        sdkmanager --install "ndk;25.2.9519653"
         echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/25.2.9519653" >> $GITHUB_ENV
 
     - name: Setup Rust toolchain
@@ -75,7 +77,7 @@ jobs:
         export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="$CC_armv7_linux_androideabi"
         export RUSTFLAGS="-C link-arg=-Wl,--no-rosegment"
 
-        # Sauvegarder dans GITHUB_ENV pour les étapes suivantes
+        # Save to GITHUB_ENV for subsequent steps
         echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
         echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/25.2.9519653" >> $GITHUB_ENV
         echo "NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653" >> $GITHUB_ENV
@@ -84,6 +86,13 @@ jobs:
         echo "AR_armv7_linux_androideabi=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar" >> $GITHUB_ENV
         echo "CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
         echo "RUSTFLAGS=-C link-arg=-Wl,--no-rosegment" >> $GITHUB_ENV
+
+    - name: Verify Android setup
+      run: |
+        echo "Android SDK: $ANDROID_HOME"
+        echo "Android NDK: $ANDROID_NDK_ROOT"
+        ls -la $ANDROID_HOME/platforms/ || echo "No platforms found"
+        sdkmanager --list_installed
 
     - name: Build Android APK (Debug)
       if: matrix.build-type == 'debug'
@@ -107,7 +116,7 @@ jobs:
           APK_SIZE=$(du -h "$APK_PATH" | cut -f1)
           echo "📦 APK Size (${{ matrix.build-type }}): $APK_SIZE" >> $GITHUB_STEP_SUMMARY
 
-          # Analyse détaillée pour release
+          # Detailed analysis for release
           if [ "${{ matrix.build-type }}" == "release" ]; then
             unzip -l "$APK_PATH" | head -20 >> apk_contents.txt
             echo "📋 APK Contents:" >> $GITHUB_STEP_SUMMARY
@@ -136,21 +145,21 @@ jobs:
         body: |
           🎮 SME Arena - Survival Mutations Engine
 
-          **Android APK pour ARMv7**
+          **Android APK for ARMv7**
 
-          🔥 **Nouvelles fonctionnalités:**
-          - Génération procédurale d'arènes 3D
-          - Système de mutations SME
-          - Contrôles tactiles optimisés
-          - Interface utilisateur responsive
+          🔥 **New Features:**
+          - Procedural 3D arena generation
+          - SME mutation system
+          - Optimized touch controls
+          - Responsive UI
 
           📱 **Installation:**
-          1. Téléchargez le fichier APK
-          2. Activez "Sources inconnues" sur Android
-          3. Installez l'APK
-          4. Profitez du jeu !
+          1. Download the APK file
+          2. Enable "Unknown sources" on Android
+          3. Install the APK
+          4. Enjoy the game!
 
-          ⚠️ **Prérequis:** Android 8.0+ (API 26)
+          ⚠️ **Requirements:** Android 8.0+ (API 26)
         draft: false
         prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') }}
       env:
@@ -179,22 +188,22 @@ jobs:
         arch: x86_64
         profile: Nexus 6
         script: |
-          echo "🤖 Émulateur Android démarré"
+          echo "🤖 Android emulator started"
           adb install ./apk/sme-arena-game.apk
 
-          # Lancer l'app et vérifier qu'elle démarre
+          # Launch app and verify it starts
           adb shell am start -n com.sme_arena_game/.MainActivity
           sleep 5
 
-          # Vérifier que l'app tourne
+          # Check if app is running
           if adb shell pidof com.sme_arena_game > /dev/null; then
-            echo "✅ Application démarrée avec succès"
+            echo "✅ Application started successfully"
           else
-            echo "❌ Échec du démarrage de l'application"
+            echo "❌ Application failed to start"
             exit 1
           fi
 
-          # Capturer quelques logs
+          # Capture some logs
           timeout 10 adb logcat | grep "sme_arena" || true
 
   performance-analysis:
@@ -214,35 +223,35 @@ jobs:
         APK_PATH="./release-apk/sme-arena-game.apk"
 
         if [ -f "$APK_PATH" ]; then
-          # Taille totale
+          # Total size
           TOTAL_SIZE=$(du -h "$APK_PATH" | cut -f1)
 
-          # Décompresser et analyser
+          # Extract and analyze
           unzip -q "$APK_PATH" -d temp_apk/
 
-          # Taille des assets principaux
+          # Main asset sizes
           NATIVE_SIZE=$(du -sh temp_apk/lib/ 2>/dev/null | cut -f1 || echo "N/A")
           ASSETS_SIZE=$(du -sh temp_apk/assets/ 2>/dev/null | cut -f1 || echo "N/A")
 
-          # Créer le rapport
+          # Create report
           cat << EOF > performance_report.md
-          # 📊 Rapport de Performance APK
+          # 📊 APK Performance Report
 
-          ## 📦 Tailles
-          - **APK Total:** $TOTAL_SIZE
-          - **Bibliothèques natives:** $NATIVE_SIZE
+          ## 📦 Sizes
+          - **Total APK:** $TOTAL_SIZE
+          - **Native libraries:** $NATIVE_SIZE
           - **Assets:** $ASSETS_SIZE
 
-          ## 🔍 Analyse détaillée
+          ## 🔍 Detailed Analysis
           \`\`\`
           $(unzip -l "$APK_PATH" | head -20)
           \`\`\`
 
-          ## 📈 Recommandations
-          $([ "$TOTAL_SIZE" \> "50M" ] && echo "⚠️ APK > 50MB - Considérer l'optimisation" || echo "✅ Taille APK acceptable")
+          ## 📈 Recommendations
+          $([ "$TOTAL_SIZE" \> "50M" ] && echo "⚠️ APK > 50MB - Consider optimization" || echo "✅ APK size acceptable")
           EOF
 
-          # Ajouter au summary GitHub
+          # Add to GitHub summary
           cat performance_report.md >> $GITHUB_STEP_SUMMARY
         fi
 
