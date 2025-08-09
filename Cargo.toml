@@ -37,8 +37,7 @@ bevy = { version = "0.16.1", default-features = false, features = [
 "x11",
 "bevy_animation",
 "bevy_gizmos",
-"serialize",
-"android-game-activity",
+"serialize"
 ] }
 
 # Physique
