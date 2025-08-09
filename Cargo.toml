@@ -1,13 +1,13 @@
 [package]
-name = "sme-arena-game"
+name = "shiftropolis"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["rlib", "cdylib"]
 
 [[bin]]
-name = "sme-arena-game"
+name = "shiftropolis"
 path = "src/main.rs"
 
 [dependencies]
@@ -83,8 +83,8 @@ android_logger = "0.14"
 
 # Configuration Android
 [package.metadata.android]
-apk_label = "SME Arena"
-apk_name = "sme_arena_game"
+apk_label = "Shiftropolis"
+apk_name = "shiftropolis"
 target_sdk_version = 33
 min_sdk_version = 26
 compile_sdk_version = 34

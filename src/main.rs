@@ -14,11 +14,6 @@ mod generation;
 mod monitoring;
 mod data;
 
-use crate::core::*;
-use crate::generation::*;
-use crate::monitoring::*;
-use crate::data::*;
-use crate::core::gameplay::*;
 
 #[cfg(target_os = "android")]
 use bevy::winit::WinitSettings;
@@ -111,7 +106,7 @@ fn setup_game(mut commands: Commands) {
     });
 }
 
-pub fn main() -> Result<()> {
+fn main() -> Result<()> {
     #[cfg(target_os = "android")]
     android_logger::init_once(android_logger::Config::default().with_max_level(log::LevelFilter::Info));
 
