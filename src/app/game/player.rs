@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 use crate::app::game::*;
 use crate::app::camera::*;
+use log::info;
 
 pub fn spawn_player(mut commands: Commands) {
     info!("👤 Spawn du joueur");

@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
+use log::info;
 
 mod states;
 mod player;
@@ -7,9 +8,6 @@ mod input;
 
 pub use states::*;
 pub use player::*;
-pub use arena::*;
-pub use mutations::*;
-pub use gameplay_systems::*;
 pub use input::*;
 
 use crate::app::core::*;
@@ -26,7 +24,7 @@ impl Plugin for GamePlugin {
         app
             // États du jeu
             .init_state::<GameState>()
-            
+
             // Ressources du jeu
             .init_resource::<GameSession>()
             .init_resource::<ShiftManager>()
@@ -36,7 +34,7 @@ impl Plugin for GamePlugin {
             .init_resource::<ArenaManager>()
             .init_resource::<CameraContext>()
             .init_resource::<TouchInputState>()
-            
+
             // Événements
             .add_event::<ShiftStartEvent>()
             .add_event::<ShiftEndEvent>()
@@ -44,15 +42,15 @@ impl Plugin for GamePlugin {
             .add_event::<PlayerDeathEvent>()
             .add_event::<MutationAppliedEvent>()
             .add_event::<CameraModeChangeEvent>()
-            
+
             // Systèmes par état
             .add_systems(OnEnter(GameState::MainMenu), setup_main_menu)
             .add_systems(OnExit(GameState::MainMenu), cleanup_main_menu)
-            
+
             .add_systems(OnEnter(GameState::Loading), setup_loading)
             .add_systems(Update, loading_system.run_if(in_state(GameState::Loading)))
             .add_systems(OnExit(GameState::Loading), cleanup_loading)
-            
+
             .add_systems(OnEnter(GameState::Playing), (
                 setup_game_session,
                 spawn_player,
@@ -62,37 +60,26 @@ impl Plugin for GamePlugin {
                 // Systèmes d'entrée
                 handle_touch_input,
                 handle_keyboard_input,
-                
+
                 // Systèmes du joueur
                 player_movement_system,
                 player_jump_system,
                 player_collision_system,
-                
-                // Systèmes de gameplay
-                shift_management_system,
-                countdown_system,
-                orb_collection_system,
-                pressure_system,
-                mutation_application_system,
-                
-                // Systèmes de l'arène
-                arena_regeneration_system,
-                dynamic_hazards_system,
-                
+
                 // Systèmes de caméra
                 update_camera_context_system,
-                
+
                 // Systèmes UI
                 update_survival_ui,
                 update_game_info_ui,
-                
+
             ).run_if(in_state(GameState::Playing)))
             .add_systems(OnExit(GameState::Playing), cleanup_game_session)
-            
+
             .add_systems(OnEnter(GameState::GameOver), setup_game_over)
             .add_systems(Update, game_over_input.run_if(in_state(GameState::GameOver)))
             .add_systems(OnExit(GameState::GameOver), cleanup_game_over)
-            
+
             .add_systems(OnEnter(GameState::Paused), setup_pause_menu)
             .add_systems(Update, pause_input.run_if(in_state(GameState::Paused)))
             .add_systems(OnExit(GameState::Paused), cleanup_pause_menu);
@@ -121,7 +108,7 @@ pub struct ArenaManager {
     pub spawned_modules: Vec<Entity>,
 }
 
-#[derive(Resource, Default)]
+#[derive(Resource)]
 pub struct TouchInputState {
     pub movement_touch: Option<(Vec2, u64)>, // Position et ID du touch
     pub jump_touch: Option<u64>,
@@ -281,7 +268,7 @@ fn setup_main_menu(mut commands: Commands) {
                 ..default()
             },
         ));
-        
+
         // Sous-titre
         parent.spawn(TextBundle::from_section(
             "Survival Mutations Engine",
@@ -336,16 +323,16 @@ fn loading_system(
     // Générer la première arène
     let mut generator = ArenaGenerator::new(Some(42));
     let mut monitor = AnomalyMonitor::new();
-    
+
     match generator.generate_with_monitoring(12, 3, &mut monitor) {
         Ok(arena) => {
             info!("✅ Arène générée avec succès");
             arena_manager.current_arena = Some(arena);
             arena_manager.arena_bounds = Vec3::new(12.0, 5.0, 12.0);
-            
+
             // Préparer le premier shift
             shift_manager.start_shift();
-            
+
             next_state.set(GameState::Playing);
         }
         Err(e) => {
@@ -370,15 +357,15 @@ fn setup_game_session(
     materials: ResMut<Assets<StandardMaterial>>,
 ) {
     info!("🎮 Démarrage de la session de jeu");
-    
+
     // Réinitialiser la session
     *game_session = GameSession::default();
-    
+
     // Générer l'arène visuellement
     if let Some(ref arena) = arena_manager.current_arena {
         spawn_arena_visuals(commands, arena_manager, meshes, materials);
     }
-    
+
     // Ajouter l'UI de survie
     setup_survival_ui(&mut commands);
 }
@@ -392,11 +379,11 @@ fn cleanup_game_session(
     for entity in arena_manager.spawned_modules.drain(..) {
         commands.entity(entity).despawn_recursive();
     }
-    
+
     if let Some(arena_entity) = arena_manager.arena_entity {
         commands.entity(arena_entity).despawn_recursive();
     }
-    
+
     // Nettoyer l'UI
     for entity in ui_query.iter() {
         commands.entity(entity).despawn_recursive();
