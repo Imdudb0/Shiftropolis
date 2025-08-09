@@ -63,6 +63,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libasound2-dev libudev-dev
+
     - name: Install Rust with Android target
       uses: dtolnay/rust-toolchain@stable
       with:
