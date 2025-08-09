@@ -1,0 +1,41 @@
+[target.armv7-linux-androideabi]
+rustflags = [
+"-C", "link-arg=-Wl,--no-rosegment",
+"-C", "target-feature=+neon,+vfp3"
+]
+
+[target.aarch64-linux-android]
+rustflags = [
+"-C", "link-arg=-Wl,--no-rosegment"
+]
+
+[target.i686-linux-android]
+rustflags = [
+"-C", "link-arg=-Wl,--no-rosegment"
+]
+
+[target.x86_64-linux-android]
+rustflags = [
+"-C", "link-arg=-Wl,--no-rosegment"
+]
+
+# Profil optimisé pour Android Release
+[profile.android-release]
+inherits = "release"
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+debug = false
+
+# Profil pour développement Android avec debug info minimal
+[profile.android-debug]
+inherits = "dev"
+opt-level = 1
+debug = 1
+strip = "none"
+panic = "abort"
+
+[build]
+target-dir = "target"

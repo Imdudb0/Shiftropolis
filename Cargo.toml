@@ -1,0 +1,112 @@
+[package]
+name = "sme-arena-game"
+version = "0.1.0"
+edition = "2024"
+
+#[lib]
+#crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "sme-arena-game"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.6", features = ["v4"] }
+thiserror = "1.0"
+anyhow = "1.0"
+bevy = { version = "0.16.1", default-features = false, features = [
+"android_shared_stdcxx", # Support Android
+"bevy_winit",
+"bevy_render",
+"bevy_core_pipeline",
+"bevy_sprite",
+"bevy_text",
+"bevy_ui",
+"bevy_pbr",
+"bevy_gltf",
+"bevy_asset",
+"bevy_scene",
+"multi_threaded",
+"png",
+"hdr",
+"ktx2",
+"zstd",
+"vorbis",
+"x11",
+"bevy_animation",
+"bevy_gizmos",
+"serialize",
+"android-game-activity",
+] }
+
+# Physique
+bevy_rapier3d = { version = "0.27", features = ["simd-stable"] }
+
+# UI et contrôles tactiles
+bevy_egui = "0.29"
+
+# Support Android natif
+jni = "0.21"
+ndk = "0.9"
+ndk-glue = "0.7"
+
+# Randomization
+rand = "0.8"
+noise = "0.8"
+
+# Collections and data structures
+indexmap = "2.1"
+petgraph = "0.6"
+
+# Parallel processing
+rayon = "1.8"
+
+# CLI and logging
+clap = { version = "4.4", features = ["derive"] }
+env_logger = "0.10"
+log = "0.4"
+colored = "2.0"
+
+# Performance monitoring
+sysinfo = "0.29"
+
+[dev-dependencies]
+criterion = "0.5"
+
+#[[bench]]
+#name = "arena_generation"
+#harness = false
+
+[target.'cfg(target_os = "android")'.dependencies]
+android_logger = "0.14"
+
+# Configuration Android
+[package.metadata.android]
+apk_label = "SME Arena"
+apk_name = "sme_arena_game"
+target_sdk_version = 33
+min_sdk_version = 26
+compile_sdk_version = 34
+icon = "@mipmap/ic_launcher"
+fullscreen = false
+orientation = "landscape"
+
+[package.metadata.android.sdk]
+target_sdk_version = 33
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.VIBRATE"
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
