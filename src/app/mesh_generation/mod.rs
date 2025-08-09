@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 use bevy::render::mesh::{Indices, PrimitiveTopology};
 use bevy_rapier3d::prelude::*;
-use crate::core::*;
-use crate::game::{ArenaModule, EnergyOrb, DynamicHazard, HazardType, FragileSurface, ArenaManager};
+use crate::app::core::*;
+use crate::app::game::{ArenaModule, EnergyOrb, DynamicHazard, HazardType, FragileSurface, ArenaManager};
 
 pub struct MeshGenerationPlugin;
 

@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::game::*;
+use crate::app::game::*;
 
 pub struct UIPlugin;
 

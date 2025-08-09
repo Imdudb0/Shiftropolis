@@ -3,9 +3,6 @@ use bevy_rapier3d::prelude::*;
 
 mod states;
 mod player;
-mod arena;
-mod mutations;
-mod gameplay_systems;
 mod input;
 
 pub use states::*;
@@ -15,12 +12,12 @@ pub use mutations::*;
 pub use gameplay_systems::*;
 pub use input::*;
 
-use crate::core::*;
-use crate::generation::*;
-use crate::monitoring::*;
-use crate::data::*;
-use crate::mesh_generation::*;
-use crate::camera::*;
+use crate::app::core::*;
+use crate::app::generation::*;
+use crate::app::monitoring::*;
+use crate::app::data::*;
+use crate::app::mesh_generation::*;
+use crate::app::camera::*;
 
 pub struct GamePlugin;
 

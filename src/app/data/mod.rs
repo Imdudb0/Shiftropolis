@@ -1,5 +1,5 @@
 //data/mod.rs
-use crate::core::*;
+use crate::app::core::*;
 use std::collections::HashMap;
 
 pub struct RulesDatabase {

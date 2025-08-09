@@ -1,7 +1,7 @@
 //core/types.rs
 use serde::{Deserialize, Serialize};
 use std::fmt;
-use crate::core::*;
+use crate::app::core::*;
 
 impl fmt::Display for RuleId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

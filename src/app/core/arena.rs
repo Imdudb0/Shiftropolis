@@ -1,5 +1,5 @@
 //core/arena.rs
-use crate::core::*;
+use crate::app::core::*;
 use std::collections::{HashMap, HashSet, VecDeque};
 
 impl Arena {
