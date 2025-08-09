@@ -111,7 +111,7 @@ fn setup_game(mut commands: Commands) {
     });
 }
 
-fn main() -> Result<()> {
+pub fn main() -> Result<()> {
     #[cfg(target_os = "android")]
     android_logger::init_once(android_logger::Config::default().with_max_level(log::LevelFilter::Info));
 
