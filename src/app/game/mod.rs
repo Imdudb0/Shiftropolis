@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 use log::info;
 use log::error;
-use colored::Style as ColoredStyle;
+use colored::Style;
 
 mod states;
 mod player;
