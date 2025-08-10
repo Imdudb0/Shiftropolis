@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use crate::app::game::*;
 use log::info;
+use colored::Style;
 
 pub struct UIPlugin;
 
