@@ -3,6 +3,8 @@ use crate::app::game::*;
 use log::info;
 use colored::Style;
 
+use crate::app::core::gameplay::ShiftManager;
+
 pub struct UIPlugin;
 
 impl Plugin for UIPlugin {
