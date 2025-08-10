@@ -183,14 +183,7 @@ pub fn setup_virtual_controls(mut commands: Commands) {
         },
         BackgroundColor(Color::srgba(0.0, 0.9, 1.0, 0.3)),
     )).with_children(|parent| {
-        parent.spawn((
-            Text::new("↑"),
-            TextStyle {
-                font_size: 40.0,
-                color: Color::WHITE,
-                ..default()
-            },
-        ));
+        parent.spawn(Text::new("↑"));
     });
 }
 
