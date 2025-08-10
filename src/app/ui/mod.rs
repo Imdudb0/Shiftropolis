@@ -85,19 +85,18 @@ pub fn setup_survival_ui(commands: &mut Commands) {
     
     let survival_ui = commands.spawn((
         SurvivalUI,
-        NodeBundle {
-            style: Style {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                position_type: PositionType::Absolute,
-                ..default()
-            },
+        Node::default(),
+        Style {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            position_type: PositionType::Absolute,
             ..default()
         },
     )).with_children(|parent| {
         // Barre de survie (haut de l'écran)
-        parent.spawn(NodeBundle {
-            style: Style {
+        parent.spawn((
+            Node::default(),
+            Style {
                 width: Val::Percent(80.0),
                 height: Val::Px(60.0),
                 position_type: PositionType::Absolute,
@@ -107,26 +106,24 @@ pub fn setup_survival_ui(commands: &mut Commands) {
                 align_items: AlignItems::Center,
                 ..default()
             },
-            background_color: Color::srgba(0.0, 0.0, 0.0, 0.5).into(),
-            ..default()
-        }).with_children(|parent| {
+            BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.5)),
+        )).with_children(|parent| {
             // Texte countdown
             parent.spawn((
                 SurvivalCountdownText,
-                TextBundle::from_section(
-                    "30.0s",
-                    TextStyle {
-                        font_size: 32.0,
-                        color: Color::WHITE,
-                        ..default()
-                    },
-                ),
+                Text::new("30.0s"),
+                TextFont {
+                    font_size: 32.0,
+                    ..default()
+                },
+                TextColor(Color::WHITE),
             ));
         });
 
         // Barre de vie visuelle
-        parent.spawn(NodeBundle {
-            style: Style {
+        parent.spawn((
+            Node::default(),
+            Style {
                 width: Val::Percent(60.0),
                 height: Val::Px(20.0),
                 position_type: PositionType::Absolute,
@@ -134,93 +131,79 @@ pub fn setup_survival_ui(commands: &mut Commands) {
                 top: Val::Px(90.0),
                 ..default()
             },
-            background_color: Color::srgba(0.2, 0.2, 0.2, 0.8).into(),
-            ..default()
-        }).with_children(|parent| {
+            BackgroundColor(Color::srgba(0.2, 0.2, 0.2, 0.8)),
+        )).with_children(|parent| {
             parent.spawn((
                 SurvivalBarFill,
-                NodeBundle {
-                    style: Style {
-                        width: Val::Percent(100.0),
-                        height: Val::Percent(100.0),
-                        ..default()
-                    },
-                    background_color: Color::srgb(0.0, 0.9, 1.0).into(), // Cyan électrique
+                Node::default(),
+                Style {
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
                     ..default()
                 },
+                BackgroundColor(Color::srgb(0.0, 0.9, 1.0)), // Cyan électrique
             ));
         });
 
         // Informations de jeu (coin haut-droit)
         parent.spawn((
             GameInfoUI,
-            NodeBundle {
-                style: Style {
-                    width: Val::Px(300.0),
-                    height: Val::Px(150.0),
-                    position_type: PositionType::Absolute,
-                    right: Val::Px(20.0),
-                    top: Val::Px(20.0),
-                    flex_direction: FlexDirection::Column,
-                    align_items: AlignItems::FlexEnd,
-                    ..default()
-                },
-                background_color: Color::srgba(0.0, 0.0, 0.0, 0.3).into(),
+            Node::default(),
+            Style {
+                width: Val::Px(300.0),
+                height: Val::Px(150.0),
+                position_type: PositionType::Absolute,
+                right: Val::Px(20.0),
+                top: Val::Px(20.0),
+                flex_direction: FlexDirection::Column,
+                align_items: AlignItems::FlexEnd,
                 ..default()
             },
+            BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.3)),
         )).with_children(|parent| {
             // Numéro de shift
             parent.spawn((
                 ShiftNumberText,
-                TextBundle::from_section(
-                    "SHIFT #1",
-                    TextStyle {
-                        font_size: 24.0,
-                        color: Color::srgb(0.0, 0.9, 1.0),
-                        ..default()
-                    },
-                ),
+                Text::new("SHIFT #1"),
+                TextFont {
+                    font_size: 24.0,
+                    ..default()
+                },
+                TextColor(Color::srgb(0.0, 0.9, 1.0)),
             ));
 
             // Niveau de difficulté
             parent.spawn((
                 DifficultyText,
-                TextBundle::from_section(
-                    "DIFFICULTY: 1.0",
-                    TextStyle {
-                        font_size: 18.0,
-                        color: Color::srgb(1.0, 0.8, 0.0),
-                        ..default()
-                    },
-                ),
+                Text::new("DIFFICULTY: 1.0"),
+                TextFont {
+                    font_size: 18.0,
+                    ..default()
+                },
+                TextColor(Color::srgb(1.0, 0.8, 0.0)),
             ));
 
             // Nombre d'orbes
             parent.spawn((
                 OrbCountText,
-                TextBundle::from_section(
-                    "ORBS: 0",
-                    TextStyle {
-                        font_size: 18.0,
-                        color: Color::srgb(0.67, 1.0, 0.0),
-                        ..default()
-                    },
-                ),
+                Text::new("ORBS: 0"),
+                TextFont {
+                    font_size: 18.0,
+                    ..default()
+                },
+                TextColor(Color::srgb(0.67, 1.0, 0.0)),
             ));
         });
     }).id();
-
-    // Sauvegarder l'ID de l'UI
-    // commands.insert_resource(SurvivalUIEntity(survival_ui));
 }
 
 pub fn update_survival_ui(
     shift_manager: Res<ShiftManager>,
-    mut countdown_query: Query<&mut Text, With<SurvivalCountdownText>>,
+    mut countdown_query: Query<(&mut Text, &mut TextColor), With<SurvivalCountdownText>>,
     mut bar_query: Query<&mut Style, With<SurvivalBarFill>>,
 ) {
     // Mettre à jour le texte du countdown
-    for mut text in countdown_query.iter_mut() {
+    for (mut text, mut text_color) in countdown_query.iter_mut() {
         let remaining = shift_manager.survival_countdown.remaining_time.as_secs_f32();
         let color = if remaining > 10.0 {
             Color::WHITE
@@ -230,8 +213,8 @@ pub fn update_survival_ui(
             Color::srgb(1.0, 0.2, 0.2) // Rouge
         };
 
-        text.sections[0].value = format!("{:.1}s", remaining);
-        text.sections[0].style.color = color;
+        **text = format!("{:.1}s", remaining);
+        text_color.0 = color;
     }
 
     // Mettre à jour la barre de survie
@@ -250,17 +233,17 @@ pub fn update_game_info_ui(
 ) {
     // Mettre à jour le numéro de shift
     for mut text in shift_query.iter_mut() {
-        text.sections[0].value = format!("SHIFT #{}", shift_manager.current_shift);
+        **text = format!("SHIFT #{}", shift_manager.current_shift);
     }
 
     // Mettre à jour la difficulté
     for mut text in difficulty_query.iter_mut() {
-        text.sections[0].value = format!("DIFFICULTY: {:.1}", game_session.difficulty_level);
+        **text = format!("DIFFICULTY: {:.1}", game_session.difficulty_level);
     }
 
     // Mettre à jour le nombre d'orbes
     for mut text in orb_query.iter_mut() {
-        text.sections[0].value = format!("ORBS: {}", game_session.total_orbs_collected);
+        **text = format!("ORBS: {}", game_session.total_orbs_collected);
     }
 }
 
@@ -286,10 +269,6 @@ pub fn mutation_notification_system(
             // Effet de fade out
             let alpha = notification.remaining_time / notification.duration;
             style.left = Val::Percent(50.0 - (1.0 - alpha) * 20.0); // Glissement vers la gauche
-            
-            if let Some(section) = text.sections.get_mut(0) {
-                section.style.color.set_a(alpha);
-            }
         }
     }
 
@@ -300,34 +279,32 @@ pub fn mutation_notification_system(
                 duration: 3.0,
                 remaining_time: 3.0,
             },
-            NodeBundle {
-                style: Style {
-                    position_type: PositionType::Absolute,
-                    left: Val::Percent(50.0),
-                    top: Val::Percent(30.0),
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
-                    ..default()
-                },
+            Node::default(),
+            Style {
+                position_type: PositionType::Absolute,
+                left: Val::Percent(50.0),
+                top: Val::Percent(30.0),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
                 ..default()
             },
         )).with_children(|parent| {
-            parent.spawn(TextBundle::from_section(
-                format!("🔥 {} 🔥", event.mutation_name.to_uppercase()),
-                TextStyle {
+            parent.spawn((
+                Text::new(format!("🔥 {} 🔥", event.mutation_name.to_uppercase())),
+                TextFont {
                     font_size: 40.0,
-                    color: Color::srgb(1.0, 0.0, 0.67), // Magenta fluo
                     ..default()
                 },
+                TextColor(Color::srgb(1.0, 0.0, 0.67)), // Magenta fluo
             ));
             
-            parent.spawn(TextBundle::from_section(
-                format!("Intensité: {:.0}%", event.intensity * 100.0),
-                TextStyle {
+            parent.spawn((
+                Text::new(format!("Intensité: {:.0}%", event.intensity * 100.0)),
+                TextFont {
                     font_size: 24.0,
-                    color: Color::srgb(0.0, 0.9, 1.0), // Cyan électrique
                     ..default()
                 },
+                TextColor(Color::srgb(0.0, 0.9, 1.0)), // Cyan électrique
             ));
         });
 
@@ -354,8 +331,8 @@ pub fn screen_flash_system(
             // Diminuer l'intensité progressivement
             let alpha = (flash.remaining_time / flash.duration) * flash.intensity;
             let mut color = flash.color;
-            color.set_a(alpha);
-            *bg_color = color.into();
+            color.set_alpha(alpha);
+            bg_color.0 = color;
         }
     }
 
@@ -369,17 +346,15 @@ pub fn screen_flash_system(
                 duration: 0.5,
                 remaining_time: 0.5,
             },
-            NodeBundle {
-                style: Style {
-                    width: Val::Percent(100.0),
-                    height: Val::Percent(100.0),
-                    position_type: PositionType::Absolute,
-                    ..default()
-                },
-                background_color: Color::srgba(1.0, 0.0, 0.0, 0.5).into(),
-                z_index: ZIndex::Global(1000),
+            Node::default(),
+            Style {
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
+                position_type: PositionType::Absolute,
                 ..default()
             },
+            BackgroundColor(Color::srgba(1.0, 0.0, 0.0, 0.5)),
+            ZIndex(1000),
         ));
         
         info!("💥 Flash d'écran rouge - Mort: {:?}", event.cause);
@@ -394,17 +369,15 @@ pub fn screen_flash_system(
                 duration: 0.2,
                 remaining_time: 0.2,
             },
-            NodeBundle {
-                style: Style {
-                    width: Val::Percent(100.0),
-                    height: Val::Percent(100.0),
-                    position_type: PositionType::Absolute,
-                    ..default()
-                },
-                background_color: Color::srgba(0.0, 0.9, 1.0, 0.2).into(),
-                z_index: ZIndex::Global(999),
+            Node::default(),
+            Style {
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
+                position_type: PositionType::Absolute,
                 ..default()
             },
+            BackgroundColor(Color::srgba(0.0, 0.9, 1.0, 0.2)),
+            ZIndex(999),
         ));
     }
 }
@@ -435,12 +408,12 @@ pub fn contextual_hints_system(
     game_session: Res<GameSession>,
     shift_manager: Res<ShiftManager>,
     player_query: Query<&Player>,
-    mut hint_query: Query<(Entity, &mut ContextualHint, &mut Text)>,
+    mut hint_query: Query<(Entity, &mut ContextualHint, &mut TextColor)>,
 ) {
     let dt = time.delta_seconds();
 
     // Mettre à jour les hints existants
-    for (entity, mut hint, mut text) in hint_query.iter_mut() {
+    for (entity, mut hint, mut text_color) in hint_query.iter_mut() {
         hint.remaining_time -= dt;
         
         if hint.remaining_time <= 0.0 {
@@ -448,9 +421,7 @@ pub fn contextual_hints_system(
         } else {
             // Effet de clignotement
             let alpha = (hint.remaining_time * 3.0).sin().abs();
-            if let Some(section) = text.sections.get_mut(0) {
-                section.style.color.set_a(alpha);
-            }
+            text_color.0.set_alpha(alpha);
         }
     }
 
@@ -483,25 +454,23 @@ fn spawn_hint(commands: &mut Commands, hint_type: HintType, text: &str, duration
             duration,
             remaining_time: duration,
         },
-        NodeBundle {
-            style: Style {
-                position_type: PositionType::Absolute,
-                left: Val::Percent(50.0),
-                top: Val::Percent(80.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..default()
-            },
+        Node::default(),
+        Style {
+            position_type: PositionType::Absolute,
+            left: Val::Percent(50.0),
+            top: Val::Percent(80.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
             ..default()
         },
     )).with_children(|parent| {
-        parent.spawn(TextBundle::from_section(
-            text,
-            TextStyle {
+        parent.spawn((
+            Text::new(text),
+            TextFont {
                 font_size: 28.0,
-                color: Color::srgb(1.0, 1.0, 0.0), // Jaune vif
                 ..default()
             },
+            TextColor(Color::srgb(1.0, 1.0, 0.0)), // Jaune vif
         ));
     });
 }
@@ -530,30 +499,28 @@ pub enum MinimapElementType {
 pub fn setup_minimap(mut commands: Commands) {
     commands.spawn((
         Minimap,
-        NodeBundle {
-            style: Style {
-                width: Val::Px(150.0),
-                height: Val::Px(150.0),
-                position_type: PositionType::Absolute,
-                right: Val::Px(20.0),
-                bottom: Val::Px(180.0),
-                border: UiRect::all(Val::Px(2.0)),
-                ..default()
-            },
-            background_color: Color::srgba(0.0, 0.0, 0.0, 0.7).into(),
-            border_color: Color::srgb(0.0, 0.9, 1.0).into(),
+        Node::default(),
+        Style {
+            width: Val::Px(150.0),
+            height: Val::Px(150.0),
+            position_type: PositionType::Absolute,
+            right: Val::Px(20.0),
+            bottom: Val::Px(180.0),
+            border: UiRect::all(Val::Px(2.0)),
             ..default()
         },
+        BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.7)),
+        BorderColor(Color::srgb(0.0, 0.9, 1.0)),
     )).with_children(|parent| {
         // Zone de contenu de la minimap
-        parent.spawn(NodeBundle {
-            style: Style {
+        parent.spawn((
+            Node::default(),
+            Style {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..default()
             },
-            ..default()
-        });
+        ));
     });
 }
 
@@ -568,10 +535,7 @@ pub fn update_minimap_system(
     if let Ok(player_transform) = player_query.get_single() {
         let player_pos = player_transform.translation;
         
-        // Mettre à jour les éléments existants ou en créer de nouveaux
-        // Note: Cette implémentation est simplifiée et nécessiterait
-        // une gestion plus sophistiquée des éléments dynamiques
-        
+        // Mettre à jour les éléments existants
         for children in minimap_query.iter_mut() {
             for &child in children.iter() {
                 if let Ok((mut element, mut style)) = element_query.get_mut(child) {
@@ -626,13 +590,13 @@ pub fn ui_particle_system(
         let progress = 1.0 - (particle.remaining_time / particle.lifetime);
         
         // Interpolation des propriétés
-        let current_size = particle.start_size.lerp(particle.end_size, progress);
-        let current_color = particle.start_color.lerp(particle.end_color, progress);
+        let current_size = particle.start_size + (particle.end_size - particle.start_size) * progress;
+        let current_color = particle.start_color.mix(&particle.end_color, progress);
         
         // Mise à jour du style
         style.width = Val::Px(current_size);
         style.height = Val::Px(current_size);
-        *bg_color = current_color.into();
+        bg_color.0 = current_color;
         
         // Mouvement
         if let Val::Px(left) = style.left {
@@ -647,8 +611,9 @@ pub fn ui_particle_system(
     for event in orb_events.read() {
         // Explosion de particules cyan pour les orbes collectés
         for _ in 0..8 {
-            let angle = rand::random::<f32>() * 2.0 * std::f32::consts::PI;
-            let speed = 50.0 + rand::random::<f32>() * 100.0;
+            use std::f32::consts::PI;
+            let angle = fastrand::f32() * 2.0 * PI;
+            let speed = 50.0 + fastrand::f32() * 100.0;
             let velocity = Vec2::new(angle.cos() * speed, angle.sin() * speed);
             
             commands.spawn((
@@ -661,19 +626,17 @@ pub fn ui_particle_system(
                     start_color: Color::srgb(0.0, 0.9, 1.0),
                     end_color: Color::srgba(0.0, 0.9, 1.0, 0.0),
                 },
-                NodeBundle {
-                    style: Style {
-                        width: Val::Px(8.0),
-                        height: Val::Px(8.0),
-                        position_type: PositionType::Absolute,
-                        left: Val::Px(960.0), // Centre de l'écran
-                        top: Val::Px(540.0),
-                        ..default()
-                    },
-                    background_color: Color::srgb(0.0, 0.9, 1.0).into(),
-                    z_index: ZIndex::Global(500),
+                Node::default(),
+                Style {
+                    width: Val::Px(8.0),
+                    height: Val::Px(8.0),
+                    position_type: PositionType::Absolute,
+                    left: Val::Px(960.0), // Centre de l'écran
+                    top: Val::Px(540.0),
                     ..default()
                 },
+                BackgroundColor(Color::srgb(0.0, 0.9, 1.0)),
+                ZIndex(500),
             ));
         }
     }
