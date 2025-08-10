@@ -17,12 +17,11 @@ pub fn spawn_player(mut commands: Commands) {
             is_grounded: false,
             last_position: Vec3::ZERO,
         },
-        PbrBundle {
-            mesh: Default::default(), // Sera remplacé par un mesh généré
-            material: Default::default(),
-            transform: Transform::from_xyz(6.0, 2.0, 6.0), // Centre de l'arène
-            ..default()
-        },
+        Mesh3d::default(), // Required component for 3D mesh
+        MeshMaterial3d::default(), // Required component for material
+        Transform::from_xyz(6.0, 2.0, 6.0), // Centre de l'arène
+        GlobalTransform::default(),
+        Visibility::default(),
         RigidBody::Dynamic,
         Collider::capsule_y(0.5, 0.4),
         Velocity::default(),
@@ -42,11 +41,14 @@ pub fn setup_camera_for_gameplay(
     if let Ok(player_entity) = player_query.get_single() {
         // Caméra contextuelle qui suit le joueur
         commands.spawn((
-            Camera3dBundle {
-                transform: Transform::from_xyz(0.0, 8.0, 12.0)
-                    .looking_at(Vec3::new(6.0, 0.0, 6.0), Vec3::Y),
-                ..default()
-            },
+            Camera3d::default(), // Required component for 3D camera
+            Transform::from_xyz(0.0, 8.0, 12.0)
+                .looking_at(Vec3::new(6.0, 0.0, 6.0), Vec3::Y),
+            GlobalTransform::default(),
+            Camera::default(),
+            Projection::default(),
+            VisibleEntities::default(),
+            Frustum::default(),
             ContextualCamera {
                 target_entity: Some(player_entity),
                 current_mode: CameraMode::Exploration,
@@ -152,7 +154,7 @@ pub fn player_collision_system(
     mut player_query: Query<(Entity, &mut Player), With<Player>>,
     orb_query: Query<&EnergyOrb, With<EnergyOrb>>,
     hazard_query: Query<&DynamicHazard, With<DynamicHazard>>,
-    fragile_query: Query<&mut FragileSurface, With<FragileSurface>>,
+    mut fragile_query: Query<&mut FragileSurface, With<FragileSurface>>,
     mut orb_collected_events: EventWriter<OrbCollectedEvent>,
     mut player_death_events: EventWriter<PlayerDeathEvent>,
     mut commands: Commands,
