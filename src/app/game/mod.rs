@@ -23,6 +23,7 @@ use crate::app::game::gameplay::DifficultySystem;
 use crate::app::game::gameplay::DangerPressureSystem;
 use crate::app::ui::update_survival_ui;
 use crate::app::ui::update_game_info_ui;
+use crate::app::game::gameplay::MutationEngine;
 
 pub struct GamePlugin;
 
