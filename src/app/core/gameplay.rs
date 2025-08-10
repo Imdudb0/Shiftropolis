@@ -5,7 +5,7 @@ use std::time::{Duration, Instant};
 use rand::prelude::*;
 
 // 1. GESTIONNAIRE DE SHIFT ET COMPTE À REBOURS
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Resource)]
 pub struct ShiftManager {
     pub current_shift: u32,
     pub shift_duration: Duration,
