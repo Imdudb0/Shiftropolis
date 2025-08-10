@@ -4,6 +4,7 @@ pub mod gameplay;
 
 pub use types::*;
 pub use arena::*;
+pub use gameplay::ShiftManager;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
