@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 use log::info;
 use log::error;
-use colored::Style;
+use colored::Style as ColoredStyle;
 
 mod states;
 mod player;
@@ -255,37 +255,35 @@ fn setup_main_menu(mut commands: Commands) {
     info!("Affichage du menu principal");
     commands.spawn((
         MainMenuUI,
-        NodeBundle {
-            style: Style {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                flex_direction: FlexDirection::Column,
-                ..default()
-            },
-            background_color: Color::srgb(0.1, 0.1, 0.2).into(),
+        Node::default(),
+        Style {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
+            flex_direction: FlexDirection::Column,
             ..default()
         },
+        BackgroundColor(Color::srgb(0.1, 0.1, 0.2)),
     )).with_children(|parent| {
         // Titre du jeu
-        parent.spawn(TextBundle::from_section(
-            "SME ARENA",
-            TextStyle {
+        parent.spawn((
+            Text::new("SME ARENA"),
+            TextFont {
                 font_size: 60.0,
-                color: Color::WHITE,
                 ..default()
             },
+            TextColor(Color::WHITE),
         ));
 
         // Sous-titre
-        parent.spawn(TextBundle::from_section(
-            "Survival Mutations Engine",
-            TextStyle {
+        parent.spawn((
+            Text::new("Survival Mutations Engine"),
+            TextFont {
                 font_size: 24.0,
-                color: Color::srgb(0.7, 0.7, 0.7),
                 ..default()
             },
+            TextColor(Color::srgb(0.7, 0.7, 0.7)),
         ));
     });
 }
@@ -300,25 +298,23 @@ fn setup_loading(mut commands: Commands) {
     info!("Chargement en cours...");
     commands.spawn((
         LoadingUI,
-        NodeBundle {
-            style: Style {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..default()
-            },
-            background_color: Color::srgb(0.05, 0.05, 0.1).into(),
+        Node::default(),
+        Style {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
             ..default()
         },
+        BackgroundColor(Color::srgb(0.05, 0.05, 0.1)),
     )).with_children(|parent| {
-        parent.spawn(TextBundle::from_section(
-            "Génération de l'arène...",
-            TextStyle {
+        parent.spawn((
+            Text::new("Génération de l'arène..."),
+            TextFont {
                 font_size: 32.0,
-                color: Color::WHITE,
                 ..default()
             },
+            TextColor(Color::WHITE),
         ));
     });
 }
@@ -402,26 +398,24 @@ fn cleanup_game_session(
 fn setup_game_over(mut commands: Commands) {
     commands.spawn((
         GameOverUI,
-        NodeBundle {
-            style: Style {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                flex_direction: FlexDirection::Column,
-                ..default()
-            },
-            background_color: Color::srgba(0.1, 0.0, 0.0, 0.8).into(),
+        Node::default(),
+        Style {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
+            flex_direction: FlexDirection::Column,
             ..default()
         },
+        BackgroundColor(Color::srgba(0.1, 0.0, 0.0, 0.8)),
     )).with_children(|parent| {
-        parent.spawn(TextBundle::from_section(
-            "GAME OVER",
-            TextStyle {
+        parent.spawn((
+            Text::new("GAME OVER"),
+            TextFont {
                 font_size: 48.0,
-                color: Color::srgb(1.0, 0.2, 0.2),
                 ..default()
             },
+            TextColor(Color::srgb(1.0, 0.2, 0.2)),
         ));
     });
 }
@@ -435,25 +429,23 @@ fn cleanup_game_over(mut commands: Commands, query: Query<Entity, With<GameOverU
 fn setup_pause_menu(mut commands: Commands) {
     commands.spawn((
         PauseMenuUI,
-        NodeBundle {
-            style: Style {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..default()
-            },
-            background_color: Color::srgba(0.0, 0.0, 0.0, 0.5).into(),
+        Node::default(),
+        Style {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
             ..default()
         },
+        BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.5)),
     )).with_children(|parent| {
-        parent.spawn(TextBundle::from_section(
-            "PAUSE",
-            TextStyle {
+        parent.spawn((
+            Text::new("PAUSE"),
+            TextFont {
                 font_size: 36.0,
-                color: Color::WHITE,
                 ..default()
             },
+            TextColor(Color::WHITE),
         ));
     });
 }
