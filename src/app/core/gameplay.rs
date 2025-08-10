@@ -1,5 +1,6 @@
 // core/gameplay.rs - Nouveau module pour les systèmes de jeu
 
+use bevy::prelude::*;
 use crate::app::core::*;
 use std::time::{Duration, Instant};
 use rand::prelude::*;
