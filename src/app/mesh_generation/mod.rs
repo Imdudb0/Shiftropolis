@@ -4,6 +4,7 @@ use bevy_rapier3d::prelude::*;
 use crate::app::core::*;
 use crate::app::game::{ArenaModule, EnergyOrb, DynamicHazard, HazardType, FragileSurface, ArenaManager};
 use log::info;
+use crate::app::game::Player;
 
 pub struct MeshGenerationPlugin;
 
