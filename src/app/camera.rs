@@ -46,7 +46,7 @@ pub struct CameraModeRegistry {
 }
 
 /// Données de contexte passées au système pour déterminer le mode approprié
-#[derive(Clone, Debug, Default)]
+#[derive(Resource, Clone, Debug, Default)]
 pub struct CameraContext {
     pub player_velocity: Vec3,
     pub player_position: Vec3,
