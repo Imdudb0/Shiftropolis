@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::ui::{Val, JustifyContent, AlignItems, FlexDirection, PositionType, Node}; // UI types - Style is now in prelude
 use crate::app::game::*;
 use log::info;
+use colored::Style;
 
 pub fn handle_touch_input(
     touches: Res<Touches>,
