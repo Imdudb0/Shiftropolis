@@ -24,6 +24,7 @@ use crate::app::game::gameplay::DangerPressureSystem;
 use crate::app::ui::update_survival_ui;
 use crate::app::ui::update_game_info_ui;
 use crate::app::game::gameplay::MutationEngine;
+use crate::app::ui::setup_survival_ui;
 
 pub struct GamePlugin;
 
