@@ -1,6 +1,5 @@
 use bevy::prelude::*;
-use bevy::ui::{Style, Val, JustifyContent, AlignItems, FlexDirection, PositionType}; // UI types
-use bevy::ecs::schedule::{NextState, State}; // State management types
+use bevy::ui::{Val, JustifyContent, AlignItems, FlexDirection, PositionType, Node}; // UI types - Style is now in prelude
 use crate::app::game::*;
 use log::info;
 
@@ -137,31 +136,29 @@ pub fn setup_virtual_controls(mut commands: Commands) {
             current_offset: Vec2::ZERO,
             is_active: false,
         },
-        NodeBundle {
-            style: Style {
-                width: Val::Px(160.0),
-                height: Val::Px(160.0),
-                position_type: PositionType::Absolute,
-                left: Val::Px(70.0),
-                bottom: Val::Px(70.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..default()
-            },
-            background_color: Color::srgba(1.0, 1.0, 1.0, 0.1).into(),
+        Node::default(),
+        Style {
+            width: Val::Px(160.0),
+            height: Val::Px(160.0),
+            position_type: PositionType::Absolute,
+            left: Val::Px(70.0),
+            bottom: Val::Px(70.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
             ..default()
         },
+        BackgroundColor(Color::srgba(1.0, 1.0, 1.0, 0.1)),
     )).with_children(|parent| {
         // Knob du joystick
-        parent.spawn(NodeBundle {
-            style: Style {
+        parent.spawn((
+            Node::default(),
+            Style {
                 width: Val::Px(60.0),
                 height: Val::Px(60.0),
                 ..default()
             },
-            background_color: Color::srgba(1.0, 1.0, 1.0, 0.3).into(),
-            ..default()
-        });
+            BackgroundColor(Color::srgba(1.0, 1.0, 1.0, 0.3)),
+        ));
     });
 
     // Bouton de saut (coin bas-droit)
@@ -172,23 +169,22 @@ pub fn setup_virtual_controls(mut commands: Commands) {
             is_pressed: false,
             action: VirtualButtonAction::Jump,
         },
-        ButtonBundle {
-            style: Style {
-                width: Val::Px(100.0),
-                height: Val::Px(100.0),
-                position_type: PositionType::Absolute,
-                right: Val::Px(50.0),
-                bottom: Val::Px(50.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..default()
-            },
-            background_color: Color::srgba(0.0, 0.9, 1.0, 0.3).into(),
+        Button,
+        Node::default(),
+        Style {
+            width: Val::Px(100.0),
+            height: Val::Px(100.0),
+            position_type: PositionType::Absolute,
+            right: Val::Px(50.0),
+            bottom: Val::Px(50.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
             ..default()
         },
+        BackgroundColor(Color::srgba(0.0, 0.9, 1.0, 0.3)),
     )).with_children(|parent| {
-        parent.spawn(TextBundle::from_section(
-            "↑",
+        parent.spawn((
+            Text::new("↑"),
             TextStyle {
                 font_size: 40.0,
                 color: Color::WHITE,
