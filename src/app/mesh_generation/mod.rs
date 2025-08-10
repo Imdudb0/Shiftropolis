@@ -5,6 +5,7 @@ use crate::app::core::*;
 use crate::app::game::{ArenaModule, EnergyOrb, DynamicHazard, HazardType, FragileSurface, ArenaManager};
 use log::info;
 use crate::app::game::Player;
+use bevy::pbr::{Mesh3d, MeshMaterial3d};
 
 pub struct MeshGenerationPlugin;
 
@@ -304,19 +305,12 @@ fn spawn_module_visual(
     let final_position = position + Vec3::new(0.0, scale.y * 0.5, 0.0);
 
     let mut entity_commands = commands.spawn((
-        PbrBundle {
-            mesh,
-            material,
-            transform: Transform::from_translation(final_position)
-                .with_scale(scale),
-            ..default()
-        },
-        RigidBody::Fixed,
-        collider,
-        ArenaModule {
-            module_id: cell.module_id.clone(),
-            original_position: final_position,
-        },
+        Mesh3d(mesh_handle.clone()),
+        MeshMaterial3d(material_handle.clone()),
+        Transform::from_translation(final_position).with_scale(scale),
+        GlobalTransform::IDENTITY,
+        Visibility::default(),
+        ComputedVisibility::default(),
     ));
 
     // Ajouter les composants supplémentaires
