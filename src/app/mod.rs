@@ -1,4 +1,4 @@
-// src/app/mod.rs
+// src/app/mod.rs...
 
 pub mod camera;
 pub mod core;
