@@ -17,31 +17,30 @@ uuid = { version = "1.6", features = ["v4"] }
 thiserror = "1.0"
 anyhow = "1.0"
 bevy = { version = "0.16.1", default-features = false, features = [
-"android_shared_stdcxx", # Support Android
-"bevy_winit",
-"bevy_render",
-"bevy_core_pipeline",
-"bevy_sprite",
-"bevy_text",
-"bevy_ui",
-"bevy_pbr",
-"bevy_gltf",
-"bevy_asset",
-"bevy_scene",
-"multi_threaded",
-"png",
-"hdr",
-"ktx2",
-"zstd",
-"vorbis",
-"x11",
-"bevy_animation",
-"bevy_gizmos",
-"serialize",
-"bevy_state"
+    "android_shared_stdcxx",
+    "bevy_winit",
+    "bevy_render",
+    "bevy_core_pipeline",
+    "bevy_sprite",
+    "bevy_text",
+    "bevy_ui",
+    "bevy_pbr",
+    "bevy_gltf",
+    "bevy_asset",
+    "bevy_scene",
+    "multi_threaded",
+    "png",
+    "hdr",
+    "ktx2",
+    "zstd",
+    "vorbis",
+    "bevy_animation",
+    "bevy_gizmos",
+    "serialize",
+    "bevy_state"
 ] }
 
-# Physique -- --
+# Physique
 bevy_rapier3d = "0.30.0"
 
 # UI et contrôles tactiles
@@ -51,6 +50,7 @@ bevy_egui = "0.29"
 jni = "0.21"
 ndk = "0.9"
 ndk-glue = "0.7"
+android_logger = "0.14"
 
 # Randomization
 rand = "0.8"
@@ -63,24 +63,11 @@ petgraph = "0.6"
 # Parallel processing
 rayon = "1.8"
 
-# CLI and logging
-clap = { version = "4.4", features = ["derive"] }
-env_logger = "0.10"
+# Logging (Android-compatible)
 log = "0.4"
-colored = "2.0"
-
-# Performance monitoring
-sysinfo = "0.29"
 
 [dev-dependencies]
 criterion = "0.5"
-
-#[[bench]]
-#name = "arena_generation"
-#harness = false
-
-[target.'cfg(target_os = "android")'.dependencies]
-android_logger = "0.14"
 
 # Configuration Android
 [package.metadata.android]
