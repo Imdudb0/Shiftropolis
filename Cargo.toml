@@ -40,7 +40,7 @@ bevy = { version = "0.16.1", default-features = false, features = [
     "bevy_state"
 ] }
 
-# Physique
+# Physique --
 bevy_rapier3d = "0.30.0"
 
 # UI et contrôles tactiles
