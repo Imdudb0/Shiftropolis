@@ -1,4 +1,4 @@
-name: Quick cargo check
+name: Android syntax check
 
 on:
   push:
@@ -17,7 +17,7 @@ on:
       - "Cargo.lock"
 
 jobs:
-  quick-check:
+  syntax-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,22 +26,25 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
 
-      - name: Cache cargo registry
+      - name: Cache cargo
         uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
+          key: ${{ runner.os }}-cargo-android-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install system dependencies
+      - name: Install Android NDK
         run: |
           sudo apt-get update
-          sudo apt-get install -y libasound2-dev libudev-dev pkg-config
+          sudo apt-get install -y wget unzip
+          wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+          unzip android-ndk-r25c-linux.zip
+          echo "ANDROID_NDK_ROOT=$PWD/android-ndk-r25c" >> $GITHUB_ENV
 
-      - name: Cargo check
-        run: cargo check
+      - name: Check syntax for Android
+        run: cargo check --target aarch64-linux-android
