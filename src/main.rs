@@ -1,4 +1,4 @@
-// src/main.rs
+// src/main.rs...
 
 use bevy::prelude::*;
 use log::info;
